@@ -24,7 +24,7 @@ import Image from "next/image";
 import ReddishLogo from "@/images/Reddish Full.png";
 import Link from "next/link";
 import { getSubreddits } from "@/sanity/lib/subreddit/getSubreddits";
-// import CreateCommunityButton from "./header/CreateCommunityButton";
+import CreateCommunityButton from "@/components/header/CreateCommunityButton";
 
 type SidebarData = {
   navMain: {
@@ -83,7 +83,7 @@ export async function AppSidebar({
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton asChild>
-                {/* <CreateCommunityButton /> */}
+                <CreateCommunityButton />
               </SidebarMenuButton>
 
               <SidebarMenuButton asChild className="p-5">
