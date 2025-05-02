@@ -10,6 +10,8 @@ import Image from "next/image";
 import { urlFor } from "@/sanity/lib/image";
 import { MessageSquare } from "lucide-react";
 import TimeAgo from "../TimeAgo";
+import CommentInput from "../comment/CommentInput";
+import CommentList from "../comment/CommentList";
 // import CommentInput from "../comment/CommentInput";
 // import CommentList from "../comment/CommentList";
 // import PostVoteButtons from "./PostVoteButtons";
@@ -88,15 +90,20 @@ async function Post({ post, userId }: PostProps) {
             </div>
           )}
 
-          {/* <button className="flex items-center px-1 py-2 gap-1 text-sm text-gray-500">
+          <button className="flex items-center px-1 py-2 gap-1 text-sm text-gray-500">
             <MessageSquare className="w-4 h-4" />
             <span>{comments.length} Comments</span>
-          </button> */}
+          </button>
+
+          {/* CommentInput */}
+          <CommentInput postId={post._id} />
+
+          {/* CommentList */}
+          <CommentList postId={post._id} comments={comments} userId={userId} />
         </div>
       </div>
 
       {/* Buttons */}
-
       {/* Report Button */}
       {/* Delete Button */}
     </article>
