@@ -12,9 +12,7 @@ import { MessageSquare } from "lucide-react";
 import TimeAgo from "../TimeAgo";
 import CommentInput from "../comment/CommentInput";
 import CommentList from "../comment/CommentList";
-// import CommentInput from "../comment/CommentInput";
-// import CommentList from "../comment/CommentList";
-// import PostVoteButtons from "./PostVoteButtons";
+import PostVoteButtons from "./PostVoteButtons";
 // import ReportButton from "../ReportButton";
 // import DeleteButton from "../DeleteButton";
 
@@ -35,6 +33,12 @@ async function Post({ post, userId }: PostProps) {
     >
       <div className="flex">
         {/* Vote Buttons */}
+        <PostVoteButtons
+          contentId={post._id}
+          votes={votes}
+          vote={vote}
+          contentType="post"
+        />
 
         {/* Post Content */}
         <div className="flex-1 p-3">
