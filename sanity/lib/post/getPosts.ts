@@ -9,8 +9,7 @@ export async function getPosts() {
     "slug": slug.current,
     body,
     publishedAt,
-    "author": author->
-    ,
+    "author": author->,
     "subreddit": subreddit->,
     image,
     isDeleted
