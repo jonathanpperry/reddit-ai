@@ -5,6 +5,9 @@ import { adminClient } from "@/sanity/lib/adminClient";
 import { getSubredditBySlug } from "@/sanity/lib/subreddit/getSubredditBySlug";
 import { getUser } from "@/sanity/lib/user/getUser";
 import { auth } from "@clerk/nextjs/server";
+import { CoreMessage, generateText } from "ai";
+import { createClerkToolkit } from "@clerk/agent-toolkit/ai-sdk";
+import { openai } from "@ai-sdk/openai";
 import { censorPost, reportUser } from "@/tools/tools";
 import { systemPrompt } from "@/tools/prompt";
 
@@ -139,23 +142,43 @@ export async function createPost({
     // ----- MOD STEP ----
     // TODO: Implement content moderation API call
 
-    // console.log("Starting content moderation process");
+    console.log("Starting content moderation process");
 
-    // console.log("Prepared messages for moderation:", JSON.stringify(messages));
+    const messages: CoreMessage[] = [
+      {
+        role: "user",
+        content: `I posted this post -> Post ID: ${post._id}\nTitle: ${title}\nBody: ${body}`,
+      },
+    ];
 
-    // try {
-    //   const authContext = await auth.protect();
-      
+    console.log("Prepared messages for moderation:", JSON.stringify(messages));
 
-    // } catch (error) {
-    //   console.error("Error in content moderation:", error);
-    //   // Don't fail the whole post creation if moderation fails
-    //   console.log("Continuing without content moderation");
-    // }
+    try {
+      const authContext = await auth.protect();
+      const toolkit = await createClerkToolkit({ authContext });
 
-    // // ----- END MOD STEP ----
+      const result = await generateText({
+        model: openai("gpt-4.1-mini"),
+        messages: messages as CoreMessage[],
+        // Conditionally inject session claims if we have auth context
+        system: toolkit.injectSessionClaims(systemPrompt),
+        tools: {
+          ...toolkit.users(),
+          censorPost,
+          reportUser,
+        },
+      });
 
-    // console.log("Post creation process completed successfully", post);
+      console.log("AI moderation completed successfully", result);
+    } catch (error) {
+      console.error("Error in content moderation:", error);
+      // Don't fail the whole post creation if moderation fails
+      console.log("Continuing without content moderation");
+    }
+
+    // ----- END MOD STEP ----
+
+    console.log("Post creation process completed successfully", post);
 
     return { post };
   } catch (error) {
