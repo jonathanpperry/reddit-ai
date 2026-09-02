@@ -1,5 +1,25 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Environment setup
+
+Copy `.env.example` to `.env.local`, then replace every placeholder with the
+matching value from Clerk, Sanity, or OpenAI. Do not commit `.env.local`.
+
+Required to load the application:
+
+- `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`
+- `CLERK_SECRET_KEY`
+- `NEXT_PUBLIC_SANITY_PROJECT_ID`
+- `NEXT_PUBLIC_SANITY_DATASET`
+
+Required for content creation and AI moderation:
+
+- `SANITY_API_ADMIN_TOKEN`
+- `OPENAI_API_KEY`
+
+`NEXT_PUBLIC_BASE_URL` should be `http://localhost:3000` for local development.
+`NEXT_PUBLIC_SANITY_API_VERSION` is optional and defaults to `2025-04-29`.
+
 ## Getting Started
 
 First, run the development server:
