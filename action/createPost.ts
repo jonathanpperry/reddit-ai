@@ -92,7 +92,7 @@ export async function createPost({
     }
 
     // Create the post
-    console.log("Preparing post document");
+    // console.log("Preparing post document");
     const postDoc: Partial<Post> = {
       _type: "post",
       title,

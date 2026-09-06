@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { useUser } from "@clerk/nextjs";
 import { ImageIcon, Plus } from "lucide-react";
-import { useRef, useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import Image from "next/image";
@@ -19,7 +19,14 @@ import { createCommunity } from "@/action/createCommunity";
 import { useRouter } from "next/navigation";
 
 function CreateCommunityButton() {
-  const { user } = useUser();
+  const { user, isLoaded } = useUser();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const authReady = mounted && isLoaded;
   const [errorMessage, setErrorMessage] = useState("");
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
@@ -120,7 +127,7 @@ function CreateCommunityButton() {
           fileName,
           fileType,
           slug.trim(),
-          description.trim() || undefined
+          description.trim() || undefined,
         );
 
         console.log("Community created:", result);
@@ -143,11 +150,16 @@ function CreateCommunityButton() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
         className="w-full p-2 pl-5 flex items-center rounded-md cursor-pointer bg-black text-white hover:bg-black transition-all duration-200 disabled:text-sm disabled:opacity-50 disabled:cursor-not-allowed"
-        disabled={!user}
+        disabled={!authReady || !user}
       >
         <Plus className="w-4 h-4 mr-2" />
-        {user ? "Create a Community" : "Sign in to create community"}
+        {!authReady
+          ? "Loading..."
+          : user
+            ? "Create a Community"
+            : "Sign in to create community"}
       </DialogTrigger>
+
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Create a Community</DialogTitle>
@@ -271,8 +283,8 @@ function CreateCommunityButton() {
               {isPending
                 ? "Creating..."
                 : user
-                ? "Create Community"
-                : "Sign in to create community"}
+                  ? "Create Community"
+                  : "Sign in to create community"}
             </Button>
           </form>
         </DialogHeader>

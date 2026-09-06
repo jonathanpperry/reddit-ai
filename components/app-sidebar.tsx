@@ -114,11 +114,15 @@ export async function AppSidebar({
             {sidebarData.navMain.map((item, index) => (
               <Collapsible
                 key={item.title}
+                asChild
                 defaultOpen
                 className="group/collapsible"
               >
                 <SidebarMenuItem>
-                  <CollapsibleTrigger asChild>
+                  <CollapsibleTrigger
+                    asChild
+                    aria-controls="sidebar-communities-content"
+                  >
                     <SidebarMenuButton>
                       {item.title}{" "}
                       <Plus className="ml-auto group-data-[state=open]/collapsible:hidden" />
@@ -126,7 +130,7 @@ export async function AppSidebar({
                     </SidebarMenuButton>
                   </CollapsibleTrigger>
                   {item.items?.length ? (
-                    <CollapsibleContent>
+                    <CollapsibleContent id="sidebar-communities-content">
                       <SidebarMenuSub>
                         {item.items.map((item) => (
                           <SidebarMenuSubItem key={item.title}>
