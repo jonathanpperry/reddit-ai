@@ -57,6 +57,7 @@
     "@clerk/shared@3.47.8": true,
     "unrs-resolver@1.12.2": true,
     "sharp@0.34.5": true,
-    "esbuild@0.28.2": true
+    "esbuild@0.28.2": true,
+    "fsevents@2.3.3": true
   }
 }
