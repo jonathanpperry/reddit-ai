@@ -7,7 +7,11 @@ export async function getPostsForSubreddit(id: string) {
         ...,
         "slug": slug.current,
         "author": author->,
-        "subreddit": subreddit->,
+        "subreddit": subreddit->{
+          _id,
+          title,
+          "slug": slug.current
+        },
         "category": category->,
         "upvotes": count(*[_type == "vote" && post._ref == ^._id && voteType == "upvote"]),
         "downvotes": count(*[_type == "vote" && post._ref == ^._id && voteType == "downvote"]),

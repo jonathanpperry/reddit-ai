@@ -20,7 +20,11 @@ export async function getPosts(sort: PostSort = "new") {
       body,
       "publishedAt": coalesce(publishedAt, _createdAt),
       "author": author->,
-      "subreddit": subreddit->,
+      "subreddit": subreddit->{
+        _id,
+        title,
+        "slug": slug.current
+      },
       image,
       isDeleted,
       "upvotes": count(*[

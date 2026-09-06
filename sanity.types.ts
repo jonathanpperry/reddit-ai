@@ -437,7 +437,7 @@ export type GetPostByIdQueryResult = {
 
 // Source: sanity/lib/post/getPosts.ts
 // Variable: getAllPostsQuery
-// Query: *[      _type == "post" &&      isDeleted != true &&      (        $sort != "hot" ||        dateTime(coalesce(publishedAt, _createdAt)) >=          dateTime(now()) - 60 * 60 * 24 * 7      )    ] {      _id,      title,      "slug": slug.current,      body,      "publishedAt": coalesce(publishedAt, _createdAt),      "author": author->,      "subreddit": subreddit->,      image,      isDeleted,      "upvotes": count(*[        _type == "vote" &&        post._ref == ^._id &&        voteType == "upvote"      ]),      "downvotes": count(*[        _type == "vote" &&        post._ref == ^._id &&        voteType == "downvote"      ])    }    | order(      select(        $sort == "popular" => upvotes - downvotes,        $sort == "hot" => upvotes + downvotes,        0      ) desc,      publishedAt desc,      _id asc    )
+// Query: *[      _type == "post" &&      isDeleted != true &&      (        $sort != "hot" ||        dateTime(coalesce(publishedAt, _createdAt)) >=          dateTime(now()) - 60 * 60 * 24 * 7      )    ] {      _id,      title,      "slug": slug.current,      body,      "publishedAt": coalesce(publishedAt, _createdAt),      "author": author->,      "subreddit": subreddit->{        _id,        title,        "slug": slug.current      },      image,      isDeleted,      "upvotes": count(*[        _type == "vote" &&        post._ref == ^._id &&        voteType == "upvote"      ]),      "downvotes": count(*[        _type == "vote" &&        post._ref == ^._id &&        voteType == "downvote"      ])    }    | order(      select(        $sort == "popular" => upvotes - downvotes,        $sort == "hot" => upvotes + downvotes,        0      ) desc,      publishedAt desc,      _id asc    )
 export type GetAllPostsQueryResult = Array<{
   _id: string;
   title: string | null;
@@ -475,23 +475,8 @@ export type GetAllPostsQueryResult = Array<{
   } | null;
   subreddit: {
     _id: string;
-    _type: "subreddit";
-    _createdAt: string;
-    _updatedAt: string;
-    _rev: string;
-    title?: string;
-    description?: string;
-    slug?: Slug;
-    image?: {
-      asset?: SanityImageAssetReference;
-      media?: unknown;
-      hotspot?: SanityImageHotspot;
-      crop?: SanityImageCrop;
-      alt?: string;
-      _type: "image";
-    };
-    moderator?: UserReference;
-    createdAt?: string;
+    title: string | null;
+    slug: string | null;
   } | null;
   image: {
     asset?: SanityImageAssetReference;
@@ -522,7 +507,7 @@ export type CheckSlugQueryResult = {
 
 // Source: sanity/lib/subreddit/getPostsForSubreddit.ts
 // Variable: getPostsForSubredditQuery
-// Query: *[_type == "post" && subreddit._ref == $id] {        ...,        "slug": slug.current,        "author": author->,        "subreddit": subreddit->,        "category": category->,        "upvotes": count(*[_type == "vote" && post._ref == ^._id && voteType == "upvote"]),        "downvotes": count(*[_type == "vote" && post._ref == ^._id && voteType == "downvote"]),        "netScore": count(*[_type == "vote" && post._ref == ^._id && voteType == "upvote"]) - count(*[_type == "vote" && post._ref == ^._id && voteType == "downvote"]),        "commentCount": count(*[_type == "comment" && post._ref == ^._id])      } | order(publishedAt desc)
+// Query: *[_type == "post" && subreddit._ref == $id] {        ...,        "slug": slug.current,        "author": author->,        "subreddit": subreddit->{          _id,          title,          "slug": slug.current        },        "category": category->,        "upvotes": count(*[_type == "vote" && post._ref == ^._id && voteType == "upvote"]),        "downvotes": count(*[_type == "vote" && post._ref == ^._id && voteType == "downvote"]),        "netScore": count(*[_type == "vote" && post._ref == ^._id && voteType == "upvote"]) - count(*[_type == "vote" && post._ref == ^._id && voteType == "downvote"]),        "commentCount": count(*[_type == "comment" && post._ref == ^._id])      } | order(publishedAt desc)
 export type GetPostsForSubredditQueryResult = Array<{
   _id: string;
   _type: "post";
@@ -545,23 +530,8 @@ export type GetPostsForSubredditQueryResult = Array<{
   } | null;
   subreddit: {
     _id: string;
-    _type: "subreddit";
-    _createdAt: string;
-    _updatedAt: string;
-    _rev: string;
-    title?: string;
-    description?: string;
-    slug?: Slug;
-    image?: {
-      asset?: SanityImageAssetReference;
-      media?: unknown;
-      hotspot?: SanityImageHotspot;
-      crop?: SanityImageCrop;
-      alt?: string;
-      _type: "image";
-    };
-    moderator?: UserReference;
-    createdAt?: string;
+    title: string | null;
+    slug: string | null;
   } | null;
   body?: Array<{
     children?: Array<{
@@ -846,10 +816,10 @@ declare global {
     '*[_type == "comment" && _id == $commentId][0] {\n    _id,\n    content,\n    createdAt,\n    "author": author->,\n    isDeleted\n  }': GetCommentByIdQueryResult;
     '\n      *[_type == "comment" && parentComment._ref == $commentId] {\n        ...,\n        _id,\n        content,\n        createdAt,\n        "author": author->,\n        "replies": *[_type == "comment" && parentComment._ref == ^._id],\n        "votes": {\n            "upvotes": count(*[_type == "vote" && comment._ref == ^._id && voteType == "upvote"]),\n            "downvotes": count(*[_type == "vote" && comment._ref == ^._id && voteType == "downvote"]),\n            "netScore": count(*[_type == "vote" && comment._ref == ^._id && voteType == "upvote"]) - count(*[_type == "vote" && comment._ref == ^._id && voteType == "downvote"]),\n            "voteStatus": *[_type == "vote" && comment._ref == ^._id && user._ref == $userId][0].voteType,\n        },\n      } | order(votes.netScore desc) //votes.netScore desc -> if you want to sort by net score\n    ': GetCommentRepliesQueryResult;
     '*[_type == "post" && _id == $postId] {\n    _id,\n    title,\n    "slug": slug.current,\n    body,\n    publishedAt,\n    "author": author->,\n    "subreddit": subreddit->,\n    image,\n    isDeleted\n  }[0]': GetPostByIdQueryResult;
-    '\n    *[\n      _type == "post" &&\n      isDeleted != true &&\n      (\n        $sort != "hot" ||\n        dateTime(coalesce(publishedAt, _createdAt)) >=\n          dateTime(now()) - 60 * 60 * 24 * 7\n      )\n    ] {\n      _id,\n      title,\n      "slug": slug.current,\n      body,\n      "publishedAt": coalesce(publishedAt, _createdAt),\n      "author": author->,\n      "subreddit": subreddit->,\n      image,\n      isDeleted,\n      "upvotes": count(*[\n        _type == "vote" &&\n        post._ref == ^._id &&\n        voteType == "upvote"\n      ]),\n      "downvotes": count(*[\n        _type == "vote" &&\n        post._ref == ^._id &&\n        voteType == "downvote"\n      ])\n    }\n    | order(\n      select(\n        $sort == "popular" => upvotes - downvotes,\n        $sort == "hot" => upvotes + downvotes,\n        0\n      ) desc,\n      publishedAt desc,\n      _id asc\n    )\n  ': GetAllPostsQueryResult;
+    '\n    *[\n      _type == "post" &&\n      isDeleted != true &&\n      (\n        $sort != "hot" ||\n        dateTime(coalesce(publishedAt, _createdAt)) >=\n          dateTime(now()) - 60 * 60 * 24 * 7\n      )\n    ] {\n      _id,\n      title,\n      "slug": slug.current,\n      body,\n      "publishedAt": coalesce(publishedAt, _createdAt),\n      "author": author->,\n      "subreddit": subreddit->{\n        _id,\n        title,\n        "slug": slug.current\n      },\n      image,\n      isDeleted,\n      "upvotes": count(*[\n        _type == "vote" &&\n        post._ref == ^._id &&\n        voteType == "upvote"\n      ]),\n      "downvotes": count(*[\n        _type == "vote" &&\n        post._ref == ^._id &&\n        voteType == "downvote"\n      ])\n    }\n    | order(\n      select(\n        $sort == "popular" => upvotes - downvotes,\n        $sort == "hot" => upvotes + downvotes,\n        0\n      ) desc,\n      publishedAt desc,\n      _id asc\n    )\n  ': GetAllPostsQueryResult;
     '\n        *[_type == "subreddit" && title == $name][0] {\n          _id\n        }\n      ': CheckExistingQueryResult;
     '\n          *[_type == "subreddit" && slug.current == $slug][0] {\n            _id\n          }\n        ': CheckSlugQueryResult;
-    '\n      *[_type == "post" && subreddit._ref == $id] {\n        ...,\n        "slug": slug.current,\n        "author": author->,\n        "subreddit": subreddit->,\n        "category": category->,\n        "upvotes": count(*[_type == "vote" && post._ref == ^._id && voteType == "upvote"]),\n        "downvotes": count(*[_type == "vote" && post._ref == ^._id && voteType == "downvote"]),\n        "netScore": count(*[_type == "vote" && post._ref == ^._id && voteType == "upvote"]) - count(*[_type == "vote" && post._ref == ^._id && voteType == "downvote"]),\n        "commentCount": count(*[_type == "comment" && post._ref == ^._id])\n      } | order(publishedAt desc) \n    ': GetPostsForSubredditQueryResult;
+    '\n      *[_type == "post" && subreddit._ref == $id] {\n        ...,\n        "slug": slug.current,\n        "author": author->,\n        "subreddit": subreddit->{\n          _id,\n          title,\n          "slug": slug.current\n        },\n        "category": category->,\n        "upvotes": count(*[_type == "vote" && post._ref == ^._id && voteType == "upvote"]),\n        "downvotes": count(*[_type == "vote" && post._ref == ^._id && voteType == "downvote"]),\n        "netScore": count(*[_type == "vote" && post._ref == ^._id && voteType == "upvote"]) - count(*[_type == "vote" && post._ref == ^._id && voteType == "downvote"]),\n        "commentCount": count(*[_type == "comment" && post._ref == ^._id])\n      } | order(publishedAt desc) \n    ': GetPostsForSubredditQueryResult;
     '*[_type == "subreddit" && slug.current == $slug][0] {\n      ...,\n      "slug": slug.current,\n      "moderator": moderator->,\n    }': GetSubredditBySlugQueryResult;
     '*[_type == "subreddit"] {\n        _id,\n        title,\n        "slug": slug.current,\n        description,\n        image,\n        "moderator": moderator->,\n        createdAt\n        } | order(createdAt desc)': GetSubredditsQueryResult;
     '*[_type == "subreddit" && title match $searchTerm + "*"] {\n    _id,\n    title,\n    "slug": slug.current,\n    description,\n    image,\n    "moderator": moderator->,\n    createdAt\n  } | order(createdAt desc)': SearchSubredditsQueryResult;
