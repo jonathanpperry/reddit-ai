@@ -13,6 +13,7 @@ export async function getUserPostVoteStatus(
   const result = await sanityFetch({
     query: getUserPostVoteStatusQuery,
     params: { postId, userId: userId || "" },
+    stega: false,
   });
 
   // Returns "upvote", "downvote", or null if no vote

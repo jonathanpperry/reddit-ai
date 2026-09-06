@@ -48,6 +48,7 @@ export async function getPosts(sort: PostSort = "new") {
   const posts = await sanityFetch({
     query: getAllPostsQuery,
     params: { sort },
+    stega: false,
   });
 
   return posts.data;

@@ -26,6 +26,7 @@ export async function getCommentReplies(
   const result = await sanityFetch({
     query: getCommentRepliesQuery,
     params: { commentId, userId: userId || "" },
+    stega: false,
   });
 
   return result.data || [];

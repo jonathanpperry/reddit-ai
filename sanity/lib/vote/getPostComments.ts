@@ -23,6 +23,7 @@ export async function getPostComments(postId: string, userId: string | null) {
   const result = await sanityFetch({
     query: getPostCommentsQuery,
     params: { postId, userId: userId || "" },
+    stega: false,
   });
 
   return result.data || [];

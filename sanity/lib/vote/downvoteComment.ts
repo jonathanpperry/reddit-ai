@@ -10,6 +10,7 @@ export async function downvoteComment(commentId: string, userId: string) {
   const existingVote = await sanityFetch({
     query: existingVoteDownvoteCommentQuery,
     params: { commentId, userId },
+    stega: false,
   });
 
   if (existingVote.data) {
