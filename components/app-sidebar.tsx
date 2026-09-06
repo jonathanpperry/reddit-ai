@@ -114,7 +114,7 @@ export async function AppSidebar({
             {sidebarData.navMain.map((item, index) => (
               <Collapsible
                 key={item.title}
-                defaultOpen={index === 1}
+                defaultOpen
                 className="group/collapsible"
               >
                 <SidebarMenuItem>

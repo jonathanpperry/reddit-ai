@@ -6,6 +6,8 @@ import Header from "@/components/header/Header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 
+import { SanityLive } from "@/sanity/lib/live";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -41,6 +43,7 @@ export default function RootLayout({
               <div className="flex flex-col">{children}</div>
             </SidebarInset>
           </SidebarProvider>
+          <SanityLive />
         </body>
       </html>
     </ClerkProvider>
