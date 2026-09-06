@@ -46,6 +46,10 @@ export function SubredditCombobox({
     }
   };
 
+  const selectedCommunity = subreddits.find(
+    (subreddit) => subreddit.slug === value,
+  );
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -55,10 +59,7 @@ export function SubredditCombobox({
           aria-expanded={open}
           className="w-full justify-between"
         >
-          {value
-            ? subreddits.find((subreddit) => subreddit.title === value)
-                ?.title || "Select a community"
-            : "Select a community"}
+          {selectedCommunity?.title || "Select a community"}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -72,12 +73,12 @@ export function SubredditCombobox({
                 <CommandItem
                   key={subreddit._id}
                   value={subreddit.title ?? ""}
-                  onSelect={handleSelect}
+                  onSelect={() => handleSelect(subreddit.slug ?? "")}
                 >
                   <Check
                     className={cn(
                       "mr-2 h-4 w-4",
-                      value === subreddit.title ? "opacity-100" : "opacity-0"
+                      value === subreddit.title ? "opacity-100" : "opacity-0",
                     )}
                   />
                   {subreddit.title}
