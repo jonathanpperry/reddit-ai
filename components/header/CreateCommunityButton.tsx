@@ -17,6 +17,7 @@ import Image from "next/image";
 import { Button } from "../ui/button";
 import { createCommunity } from "@/action/createCommunity";
 import { useRouter } from "next/navigation";
+import { generateSlug } from "@/lib/generateSlug";
 
 function CreateCommunityButton() {
   const { user, isLoaded } = useUser();
@@ -46,14 +47,6 @@ function CreateCommunityButton() {
     if (!slug || slug === generateSlug(name)) {
       setSlug(generateSlug(value));
     }
-  };
-
-  const generateSlug = (text: string) => {
-    return text
-      .toLowerCase()
-      .replace(/\s+/g, "-")
-      .replace(/[^a-z0-9-]/g, "")
-      .slice(0, 21);
   };
 
   const removeImage = () => {
